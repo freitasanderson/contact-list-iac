@@ -3,7 +3,7 @@ import '../modal.css'
 import ReactDOM from 'react-dom/client'
 
 import { CloseIcon, ImageUploadIcon, UserAdd } from '../../../icons';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { apiContacts } from '../../../../services/api'
 import ListUpdate  from '../../../callContacts/ListUpdates'
 
@@ -13,17 +13,25 @@ export function ModalEditContato({showEdit,contact,closeModal}){
     const [msg, setMsg] = useState();
     const[msgType, setMsgType] = useState()
 
-    const [file, setFile] = useState(contact.imagem);
+    const [file, setFile] = useState(null);
+    const [filePreview, setFilePreview] = useState(contact.imagem)
     const [nome, setNome] = useState(contact.nome)
     const [email, setEmail] = useState(contact.email)
     const [telefone, setTelefone] = useState(formatNumber(contact.celular))
     const [dataNascimento, setDataNascimento] = useState(contact.dataNascimento)
 
     const [submitted, setSubmitted] = useState();
+    
+    useEffect(() => {
+        if(file){
+            setFilePreview(URL.createObjectURL(file));
+        }
+    },[file])
 
     function handleChange(e) {
         if(e.target.name == 'edit_imagem'){
-            setFile(URL.createObjectURL(e.target.files[0]));
+            setFile(e.target.files[0]);
+            
         }
         else if(e.target.name == 'edit_nome'){
             setNome(e.target.value)
@@ -177,7 +185,7 @@ export function ModalEditContato({showEdit,contact,closeModal}){
                                     </label>
                                     <small id="edit_imagem_helpText" className='d-none helpText' style={{marginLeft:"18rem"}}>Por favor, selecione uma imagem</small>
                                     <small style={{marginInline:"auto",marginTop:"1rem", marginBottom:"1rem"}}>Prévia Imagem</small>
-                                    <img className="imagePreview" src={file} />
+                                    <img className="imagePreview" src={filePreview} />
                                 </div>
 
 
